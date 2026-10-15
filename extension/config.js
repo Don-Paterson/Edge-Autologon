@@ -25,6 +25,17 @@ const SITES = [
   { host: "10.1.1.130" }
 ].map(s => ({ ...DEFAULTS, ...s }));
 
+// Fields to fill in (WITHOUT submitting) whenever they appear on any of the
+// sites above, e.g. the Check Point First Time Wizard's SIC Activation Key.
+// Match a field by its on-screen label text, or by a CSS selector:
+//   { label: "Activation Key", value: "..." }
+//   { selector: "input[name='ftw_sic_key']", value: "..." }
+// Add  hosts: ["10.1.1.2"]  to a rule to limit it to particular sites.
+const AUTOFILL = [
+  { label: "Activation Key",         value: "CHANGE_ME_SIC" },
+  { label: "Confirm Activation Key", value: "CHANGE_ME_SIC" }
+];
+
 function findSite(url, type) {
   const host = new URL(url).hostname;
   return SITES.find(s => s.type === type && s.host === host);

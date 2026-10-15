@@ -11,10 +11,11 @@ Open **PowerShell as Administrator** and run:
 irm https://raw.githubusercontent.com/Don-Paterson/Edge-Autologon/main/deploy.ps1 | iex
 ```
 
-You'll be asked for the default username and password. The script then:
+You'll be asked for the default username and password. The password is also
+used as the Check Point SIC activation key (override with `-SicKey`). The script then:
 
 1. Downloads `extension/` from this repo to `C:\EdgeAutoLogon\extension`
-2. Writes the username/password into `config.js` on that machine only
+2. Writes the username/password and SIC key into `config.js` on that machine only
 3. Sets Edge policies (no startup boost/background mode, no first-run wizard)
 4. Adds `--load-extension` to the Edge desktop / Start menu / taskbar shortcuts
    and creates an **Edge (Auto Logon)** shortcut on the desktop
@@ -37,6 +38,7 @@ irm https://raw.githubusercontent.com/Don-Paterson/Edge-Autologon/main/deploy.ps
 | Option | Meaning |
 |---|---|
 | `-Username` / `-Password` | Default login used for every site |
+| `-SicKey` | SIC activation key filled into the First Time Wizard (not submitted). Defaults to the password |
 | `-IgnoreCertErrors` | **Lab only.** Edge ignores all certificate errors (self-signed device certs) |
 | `-OpenUrl` | Page to open after deployment (default `http://10.1.1.1`) |
 | `-InstallDir` | Install folder (default `C:\EdgeAutoLogon`) |
@@ -52,6 +54,13 @@ irm https://raw.githubusercontent.com/Don-Paterson/Edge-Autologon/main/deploy.ps
 - Edge updates can reset the Start menu shortcut; re-run the script if needed.
 - If the script reports it couldn't confirm the extension loaded, load it once by
   hand: `edge://extensions` → Developer mode → **Load unpacked** → `C:\EdgeAutoLogon\extension`.
+
+## Auto-filled fields (no submit)
+
+`AUTOFILL` in `extension/config.js` lists fields that are filled in whenever they
+appear, without clicking anything - currently the First Time Wizard's
+**Activation Key** and **Confirm Activation Key**. Fields are matched by their
+on-screen label (or a CSS `selector`), so add more the same way.
 
 ## Adding a site
 

@@ -16,7 +16,7 @@
 
   What it does:
     1. Downloads the extension from GitHub to C:\EdgeAutoLogon\extension
-    2. Writes the username/password into config.js (on this PC only)
+    2. Writes the username/password and SIC activation key into config.js (on this PC only)
     3. Sets Edge policies so Edge fully closes and skips the first-run wizard
     4. Adds --load-extension to the Edge shortcuts (desktop, Start menu, taskbar)
     5. Restarts Edge with the extension loaded and checks that it took
@@ -24,6 +24,9 @@
 param(
     [string]$Username = $env:EAL_USERNAME,
     [string]$Password = $env:EAL_PASSWORD,
+    # Check Point SIC activation key, filled into the First Time Wizard.
+    # Defaults to the password if not given.
+    [string]$SicKey = $env:EAL_SICKEY,
     [string]$InstallDir = 'C:\EdgeAutoLogon',
     [string]$Repo = 'Don-Paterson/Edge-Autologon',
     [string]$Branch = 'main',
@@ -87,6 +90,9 @@ param(
     $u = JsEscape $Username; $p = JsEscape $Password
     $cfg = [regex]::new('(const DEFAULTS = \{[\s\S]*?username:\s*")[^"]*(")').Replace($cfg, { param($m) $m.Groups[1].Value + $u + $m.Groups[2].Value }.GetNewClosure(), 1)
     $cfg = [regex]::new('(const DEFAULTS = \{[\s\S]*?password:\s*")[^"]*(")').Replace($cfg, { param($m) $m.Groups[1].Value + $p + $m.Groups[2].Value }.GetNewClosure(), 1)
+    # The SIC activation key defaults to the same value as the password.
+    if (-not $SicKey) { $SicKey = $Password }
+    $cfg = $cfg.Replace('CHANGE_ME_SIC', (JsEscape $SicKey))
     [IO.File]::WriteAllText($cfgPath, $cfg, (New-Object Text.UTF8Encoding $false))
     Ok "Done (stored in plain text in $cfgPath)"
 
