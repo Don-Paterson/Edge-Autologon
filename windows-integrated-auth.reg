@@ -1,0 +1,9 @@
+Windows Registry Editor Version 5.00
+
+; Use this INSTEAD of the extension when the site uses Windows/AD logon
+; (Kerberos/NTLM). Edge will then sign in silently as the current Windows user.
+; Separate multiple sites with commas, e.g. "10.1.1.2,10.1.1.3,*.corp.local"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge]
+"AuthServerAllowlist"="10.1.1.1,10.1.1.2,10.1.1.3,10.1.1.4,10.1.1.101,10.1.1.111,10.1.1.130"
+"AuthNegotiateDelegateAllowlist"="10.1.1.1,10.1.1.2,10.1.1.3,10.1.1.4,10.1.1.101,10.1.1.111,10.1.1.130"
